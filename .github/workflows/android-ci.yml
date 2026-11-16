@@ -1,0 +1,43 @@
+name: Android CI - Build & Unit Tests
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main", "develop" ]
+
+jobs:
+  verify:
+    name: Lint, Unit Tests & Debug APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Dar permisos de ejecución a Gradle
+        run: chmod +x gradlew
+
+      - name: Ejecutar Android Lint
+        run: ./gradlew lintDebug --stacktrace
+
+      - name: Ejecutar Tests Unitarios (JVM)
+        run: ./gradlew testDebugUnitTest --stacktrace
+
+      - name: Compilar APK de Debug (Verificación de Build)
+        run: ./gradlew assembleDebug --stacktrace
+
+      - name: Subir reporte de tests en caso de fallo
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-reports
+          path: app/build/reports/tests/testDebugUnitTest/
+          retention-days: 7
