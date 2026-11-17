@@ -36,6 +36,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -388,5 +389,48 @@ private fun KeypadActionButton(
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp
         )
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Previews
+// ---------------------------------------------------------------------------
+
+@Preview(name = "Onboarding PIN", showBackground = true)
+@Composable
+private fun OnboardingPinContentPreview() {
+    MaterialTheme {
+        Surface {
+            OnboardingPinContent(onPinCompleted = { _, _ -> })
+        }
+    }
+}
+
+@Preview(name = "Locked State", showBackground = true)
+@Composable
+private fun LockedContentPreview() {
+    MaterialTheme {
+        Surface {
+            LockedContent(
+                state = LockUiState.Locked(remainingAttempts = 4),
+                onPinSubmitted = {}
+            )
+        }
+    }
+}
+
+@Preview(name = "Locked Cooldown State", showBackground = true)
+@Composable
+private fun LockedCooldownContentPreview() {
+    MaterialTheme {
+        Surface {
+            LockedContent(
+                state = LockUiState.Locked(
+                    cooldownSecondsRemaining = 25,
+                    errorMessage = "Demasiados intentos fallidos"
+                ),
+                onPinSubmitted = {}
+            )
+        }
     }
 }
