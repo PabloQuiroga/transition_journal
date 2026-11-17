@@ -33,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -57,41 +58,39 @@ fun LockScreen(
         color = MaterialTheme.colorScheme.background
     ) {
         when (val state = uiState) {
-            is LockUiState.Loading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
-            }
-            is LockUiState.OnboardingPin -> {
-                OnboardingPinContent(
-                    onPinCompleted = { rawPin, confirmPin ->
-                        viewModel.setupPin(rawPin, confirmPin)
-                    }
-                )
-            }
-            is LockUiState.Locked -> {
-                LockedContent(
-                    state = state,
-                    onPinSubmitted = { pin ->
-                        viewModel.verifyPin(pin)
-                    }
-                )
-            }
-            is LockUiState.Unlocked -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "Sesión Desbloqueada",
-                        style = MaterialTheme.typography.headlineMedium
-                    )
-                }
-            }
+            is LockUiState.Loading -> LoadingStateContent()
+            is LockUiState.OnboardingPin -> OnboardingPinContent(
+                onPinCompleted = { rawPin, confirmPin -> viewModel.setupPin(rawPin, confirmPin) }
+            )
+            is LockUiState.Locked -> LockedContent(
+                state = state,
+                onPinSubmitted = { pin -> viewModel.verifyPin(pin) }
+            )
+            is LockUiState.Unlocked -> UnlockedStateContent()
         }
+    }
+}
+
+@Composable
+private fun LoadingStateContent() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator()
+    }
+}
+
+@Composable
+private fun UnlockedStateContent() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "Sesión Desbloqueada",
+            style = MaterialTheme.typography.headlineMedium
+        )
     }
 }
 
@@ -113,32 +112,13 @@ private fun OnboardingPinContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(top = 40.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Lock,
-                contentDescription = null,
-                modifier = Modifier.size(64.dp),
-                tint = MaterialTheme.colorScheme.primary
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = if (isConfirming) "Confirma tu PIN" else "Crea tu PIN de seguridad",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Ingresa entre 4 y 6 dígitos numéricos",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            LockHeader(
+                icon = Icons.Default.Lock,
+                title = if (isConfirming) "Confirma tu PIN" else "Crea tu PIN de seguridad",
+                subtitle = "Ingresa entre 4 y 6 dígitos numéricos"
             )
             Spacer(modifier = Modifier.height(24.dp))
-
             PinDotsIndicator(pinLength = currentInput.length)
 
             errorMessage?.let { error ->
@@ -154,11 +134,7 @@ private fun OnboardingPinContent(
         NumericKeypad(
             onNumberClick = { number ->
                 if (currentInput.length < 6) {
-                    if (isConfirming) {
-                        confirmPin += number
-                    } else {
-                        firstPin += number
-                    }
+                    if (isConfirming) confirmPin += number else firstPin += number
                 }
             },
             onDeleteClick = {
@@ -205,30 +181,13 @@ private fun LockedContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(top = 40.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Lock,
-                contentDescription = null,
-                modifier = Modifier.size(64.dp),
-                tint = MaterialTheme.colorScheme.primary
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = "Refugio",
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Bóveda de Privacidad",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            LockHeader(
+                icon = Icons.Default.Lock,
+                title = "Refugio",
+                subtitle = "Bóveda de Privacidad"
             )
             Spacer(modifier = Modifier.height(24.dp))
-
             PinDotsIndicator(pinLength = inputPin.length)
 
             state.errorMessage?.let { error ->
@@ -260,14 +219,10 @@ private fun LockedContent(
 
         NumericKeypad(
             onNumberClick = { number ->
-                if (inputPin.length < 6) {
-                    inputPin += number
-                }
+                if (inputPin.length < 6) inputPin += number
             },
             onDeleteClick = {
-                if (inputPin.isNotEmpty()) {
-                    inputPin = inputPin.dropLast(1)
-                }
+                if (inputPin.isNotEmpty()) inputPin = inputPin.dropLast(1)
             },
             onConfirmClick = {
                 if (inputPin.length >= 4) {
@@ -275,6 +230,40 @@ private fun LockedContent(
                     inputPin = ""
                 }
             }
+        )
+    }
+}
+
+@Composable
+private fun LockHeader(
+    icon: ImageVector,
+    title: String,
+    subtitle: String,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier.padding(top = 40.dp)
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            modifier = Modifier.size(64.dp),
+            tint = MaterialTheme.colorScheme.primary
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = title,
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = subtitle,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center
         )
     }
 }
@@ -330,45 +319,74 @@ private fun NumericKeypad(
             ) {
                 row.forEach { item ->
                     when (item) {
-                        "del" -> {
-                            IconButton(
-                                onClick = onDeleteClick,
-                                modifier = Modifier.size(64.dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                    contentDescription = "Borrar"
-                                )
-                            }
-                        }
-                        "ok" -> {
-                            TextButton(
-                                onClick = onConfirmClick,
-                                modifier = Modifier.size(64.dp)
-                            ) {
-                                Text(
-                                    text = "OK",
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 18.sp
-                                )
-                            }
-                        }
-                        else -> {
-                            OutlinedButton(
-                                onClick = { onNumberClick(item) },
-                                modifier = Modifier.size(64.dp),
-                                shape = CircleShape
-                            ) {
-                                Text(
-                                    text = item,
-                                    fontSize = 22.sp,
-                                    fontWeight = FontWeight.Medium
-                                )
-                            }
-                        }
+                        "del" -> KeypadIconButton(
+                            icon = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Borrar",
+                            onClick = onDeleteClick
+                        )
+                        "ok" -> KeypadActionButton(
+                            text = "OK",
+                            onClick = onConfirmClick
+                        )
+                        else -> KeypadNumberButton(
+                            number = item,
+                            onClick = { onNumberClick(item) }
+                        )
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun KeypadNumberButton(
+    number: String,
+    onClick: () -> Unit
+) {
+    OutlinedButton(
+        onClick = onClick,
+        modifier = Modifier.size(64.dp),
+        shape = CircleShape
+    ) {
+        Text(
+            text = number,
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Medium
+        )
+    }
+}
+
+@Composable
+private fun KeypadIconButton(
+    icon: ImageVector,
+    contentDescription: String,
+    onClick: () -> Unit
+) {
+    IconButton(
+        onClick = onClick,
+        modifier = Modifier.size(64.dp)
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = contentDescription
+        )
+    }
+}
+
+@Composable
+private fun KeypadActionButton(
+    text: String,
+    onClick: () -> Unit
+) {
+    TextButton(
+        onClick = onClick,
+        modifier = Modifier.size(64.dp)
+    ) {
+        Text(
+            text = text,
+            fontWeight = FontWeight.Bold,
+            fontSize = 18.sp
+        )
     }
 }
