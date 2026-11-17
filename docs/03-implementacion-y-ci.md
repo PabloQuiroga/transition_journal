@@ -97,6 +97,9 @@ Para cumplir con los criterios de aceptación de la **Capa 1**, cada componente 
 *   `JournalDaoTest` (usando **Robolectric** + `Room.inMemoryDatabaseBuilder`):
     *   Verifica integridad referencial (`ForeignKey` con `CASCADE` al borrar entradas con fotos) y ordenamiento cronológico descendente.
 
+### 3.4. Matriz de Casos Borde y Seguimiento TDD
+La matriz detallada de casos borde e itinerario evolutivo de pruebas unitarias TDD se gestiona de forma desacoplada en el documento vivo [docs/testing_edge_cases.md](testing_edge_cases.md).
+
 ---
 
 ## 4. Integración Continua con GitHub Actions
