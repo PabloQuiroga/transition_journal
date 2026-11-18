@@ -72,4 +72,22 @@ class CreateOrUpdateEntryUseCaseTest {
         assertEquals(1L, result.getOrNull())
         assertTrue(capturedSlot.captured.title.isNotBlank())
     }
+
+    @Test
+    fun `when entry has explicit title then preserves explicit title without overwriting`() = runTest {
+        val entry = JournalEntry(
+            title = "Título Personalizado",
+            content = "Nota con título propio",
+            mood = Mood.TRANQUILA,
+            category = Category.EMOCIONAL,
+            photos = emptyList()
+        )
+        val capturedSlot = slot<JournalEntry>()
+        coEvery { repository.saveEntry(capture(capturedSlot)) } returns Result.success(1L)
+
+        val result = useCase(entry)
+
+        assertTrue(result.isSuccess)
+        assertEquals("Título Personalizado", capturedSlot.captured.title)
+    }
 }
