@@ -20,6 +20,12 @@ class SetupPinUseCaseTest {
     }
 
     @Test
+    fun `when pin length is greater than 6 digits then returns failure`() = runTest {
+        val result = useCase(rawPin = "1234567", confirmPin = "1234567")
+        assertTrue(result.isFailure)
+    }
+
+    @Test
     fun `when pin contains non-numeric characters then returns failure`() = runTest {
         val result = useCase(rawPin = "123a", confirmPin = "123a")
         assertTrue(result.isFailure)
