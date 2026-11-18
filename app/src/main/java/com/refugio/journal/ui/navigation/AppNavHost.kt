@@ -4,9 +4,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.refugio.journal.ui.detail.EntryDetailScreen
+import com.refugio.journal.ui.detail.EntryDetailViewModel
 import com.refugio.journal.ui.editor.EntryEditorScreen
 import com.refugio.journal.ui.editor.EntryEditorViewModel
 import com.refugio.journal.ui.lock.LockScreen
@@ -18,6 +22,9 @@ sealed class Screen(val route: String) {
     data object Lock : Screen("lock")
     data object Timeline : Screen("timeline")
     data object Editor : Screen("editor")
+    data object Detail : Screen("detail/{entryId}") {
+        fun createRoute(entryId: Long) = "detail/$entryId"
+    }
 }
 
 @Composable
@@ -51,7 +58,7 @@ fun AppNavHost(
                     navController.navigate(Screen.Editor.route)
                 },
                 onEntryClick = { entryId ->
-                    // Navigation to detail or editor in future version
+                    navController.navigate(Screen.Detail.createRoute(entryId))
                 }
             )
         }
@@ -64,6 +71,19 @@ fun AppNavHost(
                     navController.popBackStack()
                 },
                 onSaveSuccess = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        composable(
+            route = Screen.Detail.route,
+            arguments = listOf(navArgument("entryId") { type = NavType.LongType })
+        ) {
+            val viewModel: EntryDetailViewModel = hiltViewModel()
+            EntryDetailScreen(
+                viewModel = viewModel,
+                onBackClick = {
                     navController.popBackStack()
                 }
             )
