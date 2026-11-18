@@ -164,6 +164,9 @@ on:
     tags:
       - 'v*'
 
+permissions:
+  contents: write
+
 jobs:
   release:
     name: Build & Publish Release Artifacts
