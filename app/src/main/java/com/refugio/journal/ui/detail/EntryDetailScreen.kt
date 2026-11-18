@@ -43,10 +43,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.refugio.journal.domain.model.Category
+import com.refugio.journal.domain.model.JournalEntry
 import com.refugio.journal.domain.model.Mood
+import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
@@ -259,5 +262,76 @@ private fun getCategoryDisplayName(category: Category): String {
         Category.SOCIAL -> "💬 Social"
         Category.EMOCIONAL -> "🧠 Emocional"
         Category.HITO -> "⭐ Hito"
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Previews
+// ---------------------------------------------------------------------------
+
+@Preview(name = "Entry Detail Screen", showBackground = true)
+@Composable
+private fun EntryDetailScreenPreview() {
+    MaterialTheme {
+        Surface {
+            val sampleEntry = JournalEntry(
+                id = 1L,
+                createdAt = Instant.now(),
+                updatedAt = Instant.now(),
+                title = "Mi primer día con pronombre elle",
+                content = "Fue una experiencia increíblemente liberadora y hermosa. Sentí mucha paz al poder expresarme tal cual soy.",
+                mood = Mood.EUFORICA,
+                category = Category.SOCIAL,
+                isMilestone = true
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text(
+                    text = sampleEntry.title,
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "Lunes, 17 de noviembre de 2026, 09:33",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.outline
+                )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Surface(
+                        shape = MaterialTheme.shapes.small,
+                        color = MaterialTheme.colorScheme.primaryContainer
+                    ) {
+                        Text(
+                            text = getMoodDisplayName(sampleEntry.mood),
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    }
+                    Surface(
+                        shape = MaterialTheme.shapes.small,
+                        color = MaterialTheme.colorScheme.secondaryContainer
+                    ) {
+                        Text(
+                            text = getCategoryDisplayName(sampleEntry.category),
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = sampleEntry.content,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
+        }
     }
 }
