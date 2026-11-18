@@ -16,6 +16,7 @@
 | `VerifyAccessUseCase` | Reseteo del contador de fallos tras ingresar PIN correcto | `AC-02.1`: PIN correcto limpia intentos | Pendiente |
 | `VerifyAccessUseCase` | Intento de PIN mientras el Cooldown de 30s está activo | `AC-02.2`: Bloqueo estricto sin reevaluar | Pendiente |
 | `PrepareShareContentUseCase` | Foto seleccionada no existe físicamente en el storage | `RN-04`: Retornar Result de fallo controlado | Pendiente |
+| `ImportPhotoUseCase` | Importar más de 5 fotos en una misma entrada | `US-04`: Límite máximo de 5 fotos | Completado (Green) |
 
 ---
 
@@ -33,5 +34,7 @@
 
 | Componente | Caso Borde Identificado | Criterio de Aceptación / Regla | Estado |
 | :--- | :--- | :--- | :--- |
-| `LockViewModel` | `verifyPin` falla tras 5 intentos | Transición a `Locked` con cooldown | Pendiente |
+| `LockViewModel` | `verifyPin` falla tras 5 intentos | Transición a `Locked` con cooldown | Completado (Green) |
 | `LockViewModel` | Minimizar app (`ON_STOP`) o botón de bloqueo rápido | Transición inmediata a `Locked` | Pendiente |
+| `EntryDetailViewModel` | Cargar detalle de entrada con ID no existente en DB | Mostrar mensaje "Entrada no encontrada" | Completado (Green) |
+| `TimelineViewModel` | Filtrado combinado (Categoría + Hito + Query de texto) | `AC-06.1`: Coincidencia multi-criterio | Completado (Green) |
