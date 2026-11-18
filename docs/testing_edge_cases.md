@@ -10,7 +10,7 @@
 | :--- | :--- | :--- | :--- |
 | `SetupPinUseCase` | PIN con letras o caracteres alfanuméricos (ej. `"123a"`) | `AC-01.1`: Solo dígitos numéricos | Completado (Green) |
 | `SetupPinUseCase` | PIN mayor a 6 dígitos (ej. `"1234567"`) | `AC-01.1`: Máximo 6 dígitos | Completado (Green) |
-| `CreateOrUpdateEntryUseCase` | Entrada sin texto pero con al menos 1 foto adjunta | `AC-03.1`: Válida si contiene foto o texto | Pendiente |
+| `CreateOrUpdateEntryUseCase` | Entrada sin texto pero con al menos 1 foto adjunta | `AC-03.1`: Válida si contiene foto o texto | Completado (Green) |
 | `CreateOrUpdateEntryUseCase` | Entrada con título explícito previo | `AC-03.3`: Conservar título del usuario | Pendiente |
 | `CreateOrUpdateEntryUseCase` | Conservar `createdAt` y actualizar `updatedAt` en edición | `AC-05.1`: Preservar fecha original | Pendiente |
 | `VerifyAccessUseCase` | Reseteo del contador de fallos tras ingresar PIN correcto | `AC-02.1`: PIN correcto limpia intentos | Pendiente |
