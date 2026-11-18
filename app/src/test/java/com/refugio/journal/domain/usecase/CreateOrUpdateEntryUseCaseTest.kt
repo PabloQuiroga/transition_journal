@@ -13,6 +13,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.time.Instant
 
 class CreateOrUpdateEntryUseCaseTest {
 
@@ -89,5 +90,29 @@ class CreateOrUpdateEntryUseCaseTest {
 
         assertTrue(result.isSuccess)
         assertEquals("Título Personalizado", capturedSlot.captured.title)
+    }
+
+    @Test
+    fun `when updating existing entry then preserves createdAt and updates updatedAt`() = runTest {
+        val originalCreatedAt = Instant.now().minusSeconds(86400)
+        val oldUpdatedAt = Instant.now().minusSeconds(43200)
+        val existingEntry = JournalEntry(
+            id = 5L,
+            createdAt = originalCreatedAt,
+            updatedAt = oldUpdatedAt,
+            title = "Entrada existente",
+            content = "Contenido editado",
+            mood = Mood.TRANQUILA,
+            category = Category.EMOCIONAL,
+            photos = emptyList()
+        )
+        val capturedSlot = slot<JournalEntry>()
+        coEvery { repository.saveEntry(capture(capturedSlot)) } returns Result.success(5L)
+
+        val result = useCase(existingEntry)
+
+        assertTrue(result.isSuccess)
+        assertEquals(originalCreatedAt, capturedSlot.captured.createdAt)
+        assertTrue(capturedSlot.captured.updatedAt.isAfter(oldUpdatedAt))
     }
 }
