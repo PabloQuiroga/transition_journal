@@ -102,9 +102,10 @@ La matriz detallada de casos borde e itinerario evolutivo de pruebas unitarias T
 
 ---
 
-## 4. Integración Continua con GitHub Actions
+## 4. Integración y Entrega Continua (CI/CD) con GitHub Actions
 
-Archivo a crear en `.github/workflows/android-ci.yml` en la raíz del repositorio. Este pipeline se ejecuta automáticamente en cada `push` o `Pull Request` hacia `main` y `develop`:
+### 4.1. Integración Continua (CI)
+Archivo `.github/workflows/android-ci.yml` en la raíz del repositorio. Este pipeline se ejecuta automáticamente en cada `push` o `Pull Request` hacia `main` y `develop`:
 
 ```yaml
 name: Android CI - Build & Unit Tests
@@ -150,6 +151,49 @@ jobs:
           name: unit-test-reports
           path: app/build/reports/tests/testDebugUnitTest/
           retention-days: 7
+```
+
+### 4.2. Entrega Continua (CD) y Publicación de Releases
+Archivo `.github/workflows/android-cd.yml`. Este pipeline se ejecuta automáticamente al publicar un nuevo tag de versión en Git (ej. `v1.0.0`):
+
+```yaml
+name: Android CD - Release Build & GitHub Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    name: Build & Publish Release Artifacts
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Dar permisos de ejecución a Gradle
+        run: chmod +x gradlew
+
+      - name: Ejecutar Tests Unitarios
+        run: ./gradlew testDebugUnitTest --stacktrace
+
+      - name: Compilar APK de Release
+        run: ./gradlew assembleRelease --stacktrace
+
+      - name: Crear GitHub Release y Adjuntar APK
+        uses: softprops/action-gh-release@v2
+        with:
+          files: app/build/outputs/apk/release/app-release-unsigned.apk
+          generate_release_notes: true
 ```
 
 ---
