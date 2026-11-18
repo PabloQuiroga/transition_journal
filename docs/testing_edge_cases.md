@@ -8,7 +8,7 @@
 
 | Componente | Caso Borde Identificado | Criterio de Aceptación / Regla | Estado |
 | :--- | :--- | :--- | :--- |
-| `SetupPinUseCase` | PIN con letras o caracteres alfanuméricos (ej. `"123a"`) | `AC-01.1`: Solo dígitos numéricos | Pendiente |
+| `SetupPinUseCase` | PIN con letras o caracteres alfanuméricos (ej. `"123a"`) | `AC-01.1`: Solo dígitos numéricos | Completado (Green) |
 | `SetupPinUseCase` | PIN mayor a 6 dígitos (ej. `"1234567"`) | `AC-01.1`: Máximo 6 dígitos | Pendiente |
 | `CreateOrUpdateEntryUseCase` | Entrada sin texto pero con al menos 1 foto adjunta | `AC-03.1`: Válida si contiene foto o texto | Pendiente |
 | `CreateOrUpdateEntryUseCase` | Entrada con título explícito previo | `AC-03.3`: Conservar título del usuario | Pendiente |
