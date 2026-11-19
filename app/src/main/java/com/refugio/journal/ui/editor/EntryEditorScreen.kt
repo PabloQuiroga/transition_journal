@@ -180,9 +180,35 @@ fun EntryEditorScreen(
                 }
             }
 
-            // Photos Carousel
+            // Photos Section (Always visible button + carousel)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column {
+                    Text(text = "Fotografías", style = MaterialTheme.typography.titleSmall)
+                    Text(
+                        text = "${uiState.photos.size} de 5 adjuntas",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.outline
+                    )
+                }
+                OutlinedButton(
+                    onClick = {
+                        photoPickerLauncher.launch(
+                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                        )
+                    },
+                    enabled = uiState.photos.size < 5
+                ) {
+                    Icon(imageVector = Icons.Default.AddCircle, contentDescription = null, modifier = Modifier.size(16.dp))
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text("Adjuntar foto")
+                }
+            }
+
             if (uiState.photos.isNotEmpty()) {
-                Text(text = "Fotografías adjuntas (${uiState.photos.size}/5)", style = MaterialTheme.typography.titleSmall)
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     items(uiState.photos, key = { it.fileName }) { photo ->
                         val photoFile = File(context.filesDir, "private_photos/${photo.fileName}")
@@ -327,14 +353,37 @@ private fun getCategoryDisplayName(category: Category?): String {
 // Previews
 // ---------------------------------------------------------------------------
 
-@Preview(name = "Entry Editor Screen Preview", showBackground = true)
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(name = "Entry Editor Screen with TopBar", showBackground = true)
 @Composable
 private fun EntryEditorScreenPreview() {
     MaterialTheme {
-        Surface {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text(text = "Nueva Entrada", fontWeight = FontWeight.Bold) },
+                    navigationIcon = {
+                        IconButton(onClick = {}) {
+                            Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+                        }
+                    },
+                    actions = {
+                        IconButton(onClick = {}) {
+                            Icon(imageVector = Icons.Default.Check, contentDescription = "Guardar")
+                        }
+                    }
+                )
+            },
+            floatingActionButton = {
+                FloatingActionButton(onClick = {}) {
+                    Icon(imageVector = Icons.Default.AddCircle, contentDescription = "Adjuntar foto")
+                }
+            }
+        ) { paddingValues ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .padding(paddingValues)
                     .verticalScroll(rememberScrollState())
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -377,8 +426,28 @@ private fun EntryEditorScreenPreview() {
                     }
                 }
 
+                // Photos Section Button
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column {
+                        Text(text = "Fotografías", style = MaterialTheme.typography.titleSmall)
+                        Text(
+                            text = "1 de 5 adjuntas",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.outline
+                        )
+                    }
+                    OutlinedButton(onClick = {}) {
+                        Icon(imageVector = Icons.Default.AddCircle, contentDescription = null, modifier = Modifier.size(16.dp))
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text("Adjuntar foto")
+                    }
+                }
+
                 // Photos Carousel
-                Text(text = "Fotografías adjuntas (1/5)", style = MaterialTheme.typography.titleSmall)
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     item {
                         Box(modifier = Modifier.size(80.dp)) {
