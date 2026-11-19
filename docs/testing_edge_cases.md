@@ -13,7 +13,7 @@
 | `CreateOrUpdateEntryUseCase` | Entrada sin texto pero con al menos 1 foto adjunta | `AC-03.1`: Válida si contiene foto o texto | Completado (Green) |
 | `CreateOrUpdateEntryUseCase` | Entrada con título explícito previo | `AC-03.3`: Conservar título del usuario | Completado (Green) |
 | `CreateOrUpdateEntryUseCase` | Conservar `createdAt` y actualizar `updatedAt` en edición | `AC-05.1`: Preservar fecha original | Completado (Green) |
-| `VerifyAccessUseCase` | Reseteo del contador de fallos tras ingresar PIN correcto | `AC-02.1`: PIN correcto limpia intentos | Pendiente |
+| `VerifyAccessUseCase` | Reseteo del contador de fallos tras ingresar PIN correcto | `AC-02.1`: PIN correcto limpia intentos | Completado (Green) |
 | `VerifyAccessUseCase` | Intento de PIN mientras el Cooldown de 30s está activo | `AC-02.2`: Bloqueo estricto sin reevaluar | Pendiente |
 | `PrepareShareContentUseCase` | Foto seleccionada no existe físicamente en el storage | `RN-04`: Retornar Result de fallo controlado | Pendiente |
 | `ImportPhotoUseCase` | Importar más de 5 fotos en una misma entrada | `US-04`: Límite máximo de 5 fotos | Completado (Green) |

@@ -45,4 +45,21 @@ class VerifyAccessUseCaseTest {
 
         assertTrue(result is VerifyAccessResult.CooldownActive)
     }
+
+    @Test
+    fun `when entering correct pin after failed attempts then resets failed attempts counter`() = runTest {
+        coEvery { securityManager.validatePin("wrong") } returns false
+        coEvery { securityManager.validatePin("1234") } returns true
+
+        repeat(3) {
+            useCase.verifyPin("wrong")
+        }
+
+        val successResult = useCase.verifyPin("1234")
+        assertTrue(successResult is VerifyAccessResult.Success)
+
+        val nextFailedResult = useCase.verifyPin("wrong")
+        assertTrue(nextFailedResult is VerifyAccessResult.InvalidPin)
+        assertEquals(4, (nextFailedResult as VerifyAccessResult.InvalidPin).remainingAttempts)
+    }
 }
