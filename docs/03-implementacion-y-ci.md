@@ -210,9 +210,3 @@ jobs:
 5. Guardar los 3 documentos en `/docs` y el pipeline en `.github/workflows/android-ci.yml`.
 6. Hacer el primer `push` y confirmar que el workflow de GitHub Actions pase en verde.
 ```
-
----
-
-Con este documento ya tenés el paquete completo dividido en sus tres capas (**Especificación**, **Diseño Lógico** e **Implementación + Tests + CI**). 
-
-Cuando crees el proyecto en Android Studio y el repositorio en GitHub, si querés podemos ir bajando esto a código real paso a paso (por ejemplo, armando primero el módulo de seguridad y bloqueo o la base de datos con sus tests unitarios). ¿Cómo venís con eso?

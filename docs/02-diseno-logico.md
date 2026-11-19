@@ -41,21 +41,21 @@ Modelos independientes de las anotaciones de base de datos o serialización:
 ```kotlin
 data class JournalEntry(
     val id: Long = 0L,
-    val createdAt: Instant,
-    val updatedAt: Instant,
+    val createdAt: Instant = Instant.now(),
+    val updatedAt: Instant = Instant.now(),
+    val occurredAt: Instant = createdAt,
     val title: String,
     val content: String,
-    val mood: Mood,
+    val mood: Mood? = null,
     val category: Category,
-    val isMilestone: Boolean,
+    val isMilestone: Boolean = false,
     val photos: List<EntryPhoto> = emptyList()
 )
 
 data class EntryPhoto(
     val id: Long = 0L,
-    val entryId: Long,
+    val entryId: Long = 0L,
     val fileName: String,       // UUID generado internamente (ej. "a1b2c3d4.jpg")
-    val absolutePath: String,   // Ruta dentro del sandbox privado de la app
     val caption: String? = null,
     val orderIndex: Int = 0
 )
