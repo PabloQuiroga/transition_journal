@@ -6,9 +6,10 @@ data class JournalEntry(
     val id: Long = 0L,
     val createdAt: Instant = Instant.now(),
     val updatedAt: Instant = Instant.now(),
+    val occurredAt: Instant = createdAt,
     val title: String,
     val content: String,
-    val mood: Mood,
+    val mood: Mood? = null,
     val category: Category,
     val isMilestone: Boolean = false,
     val photos: List<EntryPhoto> = emptyList()
