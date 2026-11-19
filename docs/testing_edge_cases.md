@@ -15,7 +15,7 @@
 | `CreateOrUpdateEntryUseCase` | Conservar `createdAt` y actualizar `updatedAt` en edición | `AC-05.1`: Preservar fecha original | Completado (Green) |
 | `VerifyAccessUseCase` | Reseteo del contador de fallos tras ingresar PIN correcto | `AC-02.1`: PIN correcto limpia intentos | Completado (Green) |
 | `VerifyAccessUseCase` | Intento de PIN mientras el Cooldown de 30s está activo | `AC-02.2`: Bloqueo estricto sin reevaluar | Completado (Green) |
-| `PrepareShareContentUseCase` | Foto seleccionada no existe físicamente en el storage | `RN-04`: Retornar Result de fallo controlado | Pendiente |
+| `PrepareShareContentUseCase` | Foto seleccionada no existe físicamente en el storage | `RN-04`: Retornar Result de fallo controlado | Completado (Green) |
 | `ImportPhotoUseCase` | Importar más de 5 fotos en una misma entrada | `US-04`: Límite máximo de 5 fotos | Completado (Green) |
 
 ---

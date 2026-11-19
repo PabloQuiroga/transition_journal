@@ -56,4 +56,22 @@ class PrepareShareContentUseCaseTest {
         val shareContent = result.getOrNull()
         assertEquals(expectedUri, shareContent?.photoUriString)
     }
+
+    @Test
+    fun `when selected photo does not exist in storage then returns failure result`() = runTest {
+        val entry = JournalEntry(
+            id = 1L,
+            title = "Look especial",
+            content = "Foto eliminada",
+            mood = Mood.EUFORICA,
+            category = Category.EXPRESION_ESTILO,
+            photos = listOf(EntryPhoto(id = 1L, entryId = 1L, fileName = "missing.jpg", absolutePath = "/path/missing.jpg"))
+        )
+
+        coEvery { photoStorageManager.prepareShareableFile("missing.jpg") } returns Result.failure(IllegalStateException("File not found"))
+
+        val result = useCase(entry = entry, selectedPhotoFileName = "missing.jpg")
+
+        assertTrue(result.isFailure)
+    }
 }
