@@ -115,4 +115,25 @@ class CreateOrUpdateEntryUseCaseTest {
         assertEquals(originalCreatedAt, capturedSlot.captured.createdAt)
         assertTrue(capturedSlot.captured.updatedAt.isAfter(oldUpdatedAt))
     }
+
+    @Test
+    fun `when creating new entry with past custom createdAt then preserves past createdAt date`() = runTest {
+        val pastDate = Instant.now().minusSeconds(86400 * 30)
+        val pastEntry = JournalEntry(
+            id = 0L,
+            createdAt = pastDate,
+            title = "Registro de hace un mes",
+            content = "Nota retroactiva",
+            mood = Mood.TRANQUILA,
+            category = Category.EMOCIONAL,
+            photos = emptyList()
+        )
+        val capturedSlot = slot<JournalEntry>()
+        coEvery { repository.saveEntry(capture(capturedSlot)) } returns Result.success(10L)
+
+        val result = useCase(pastEntry)
+
+        assertTrue(result.isSuccess)
+        assertEquals(pastDate, capturedSlot.captured.createdAt)
+    }
 }

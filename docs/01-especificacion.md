@@ -94,6 +94,10 @@ Proveer una aplicación móvil personal, segura y completamente *offline* para a
     *   **Dado** que dejo el campo de título vacío al guardar una entrada válida,
     *   **Cuando** se guarda la entrada,
     *   **Entonces** el sistema asigna automáticamente un título descriptivo basado en la fecha (ej. *"Domingo, 15 de noviembre"*).
+*   **AC-03.4 (Entradas retroactivas / Fecha seleccionada):**
+    *   **Dado** que selecciono una fecha pasada en el selector de fecha del editor,
+    *   **Cuando** guardo la entrada,
+    *   **Entonces** el sistema asigna la fecha pasada seleccionada a `createdAt` y la posiciona cronológicamente en la línea de tiempo.
 
 #### US-04: Adjuntar y Gestionar Fotografías Privadas
 **Como** usuaria,  

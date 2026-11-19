@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.Instant
 import javax.inject.Inject
 
 data class EditorUiState(
@@ -22,6 +23,7 @@ data class EditorUiState(
     val mood: Mood = Mood.TRANQUILA,
     val category: Category = Category.EXPRESION_ESTILO,
     val isMilestone: Boolean = false,
+    val customCreatedAt: Instant? = null,
     val photos: List<EntryPhoto> = emptyList(),
     val isSaving: Boolean = false,
     val isSavedSuccess: Boolean = false,
@@ -57,6 +59,10 @@ class EntryEditorViewModel @Inject constructor(
         _uiState.update { it.copy(isMilestone = isMilestone) }
     }
 
+    fun setCustomCreatedAt(instant: Instant?) {
+        _uiState.update { it.copy(customCreatedAt = instant) }
+    }
+
     fun importPhoto(sourceUriString: String) {
         viewModelScope.launch {
             val currentCount = _uiState.value.photos.size
@@ -88,6 +94,7 @@ class EntryEditorViewModel @Inject constructor(
             _uiState.update { it.copy(isSaving = true, errorMessage = null) }
             val state = _uiState.value
             val entry = JournalEntry(
+                createdAt = state.customCreatedAt ?: Instant.now(),
                 title = state.title,
                 content = state.content,
                 mood = state.mood,
