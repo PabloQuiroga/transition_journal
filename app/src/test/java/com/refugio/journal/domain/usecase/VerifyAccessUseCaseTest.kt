@@ -62,4 +62,17 @@ class VerifyAccessUseCaseTest {
         assertTrue(nextFailedResult is VerifyAccessResult.InvalidPin)
         assertEquals(4, (nextFailedResult as VerifyAccessResult.InvalidPin).remainingAttempts)
     }
+
+    @Test
+    fun `when verifyPin is called during active cooldown then returns CooldownActive immediately`() = runTest {
+        coEvery { securityManager.validatePin("wrong") } returns false
+
+        repeat(5) {
+            useCase.verifyPin("wrong")
+        }
+
+        val cooldownResult = useCase.verifyPin("1234")
+
+        assertTrue(cooldownResult is VerifyAccessResult.CooldownActive)
+    }
 }
