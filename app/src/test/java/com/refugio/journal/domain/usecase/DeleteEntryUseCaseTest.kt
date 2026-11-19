@@ -29,7 +29,7 @@ class DeleteEntryUseCaseTest {
             mood = Mood.TRANQUILA,
             category = Category.EMOCIONAL,
             photos = listOf(
-                EntryPhoto(id = 1L, entryId = entryId, fileName = "photo1.jpg", absolutePath = "/path/photo1.jpg")
+                EntryPhoto(id = 1L, entryId = entryId, fileName = "photo1.jpg")
             )
         )
 

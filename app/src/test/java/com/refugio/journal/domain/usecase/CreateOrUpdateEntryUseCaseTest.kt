@@ -43,7 +43,7 @@ class CreateOrUpdateEntryUseCaseTest {
             mood = Mood.EUFORICA,
             category = Category.EXPRESION_ESTILO,
             photos = listOf(
-                EntryPhoto(id = 1L, entryId = 0L, fileName = "outfit.jpg", absolutePath = "/path/outfit.jpg")
+                EntryPhoto(id = 1L, entryId = 0L, fileName = "outfit.jpg")
             )
         )
 

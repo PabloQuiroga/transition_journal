@@ -44,7 +44,7 @@ class PrepareShareContentUseCaseTest {
             content = "Foto de hoy",
             mood = Mood.EUFORICA,
             category = Category.EXPRESION_ESTILO,
-            photos = listOf(EntryPhoto(id = 1L, entryId = 1L, fileName = "photo.jpg", absolutePath = "/path/photo.jpg"))
+            photos = listOf(EntryPhoto(id = 1L, entryId = 1L, fileName = "photo.jpg"))
         )
         val expectedUri = "content://com.refugio.journal.fileprovider/cache/photo.jpg"
 
@@ -65,7 +65,7 @@ class PrepareShareContentUseCaseTest {
             content = "Foto eliminada",
             mood = Mood.EUFORICA,
             category = Category.EXPRESION_ESTILO,
-            photos = listOf(EntryPhoto(id = 1L, entryId = 1L, fileName = "missing.jpg", absolutePath = "/path/missing.jpg"))
+            photos = listOf(EntryPhoto(id = 1L, entryId = 1L, fileName = "missing.jpg"))
         )
 
         coEvery { photoStorageManager.prepareShareableFile("missing.jpg") } returns Result.failure(IllegalStateException("File not found"))
