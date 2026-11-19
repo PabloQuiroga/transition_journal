@@ -78,4 +78,18 @@ class LockViewModelTest {
             assertEquals(LockUiState.Unlocked, awaitItem())
         }
     }
+
+    @Test
+    fun `when lockSession is called then uiState transitions to Locked`() = runTest {
+        coEvery { securityManager.isPinConfigured() } returns true
+
+        val viewModel = LockViewModel(securityManager, verifyAccessUseCase, setupPinUseCase)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.lockSession()
+
+        viewModel.uiState.test {
+            assertTrue(awaitItem() is LockUiState.Locked)
+        }
+    }
 }

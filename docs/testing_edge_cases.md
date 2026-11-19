@@ -35,6 +35,6 @@
 | Componente | Caso Borde Identificado | Criterio de Aceptación / Regla | Estado |
 | :--- | :--- | :--- | :--- |
 | `LockViewModel` | `verifyPin` falla tras 5 intentos | Transición a `Locked` con cooldown | Completado (Green) |
-| `LockViewModel` | Minimizar app (`ON_STOP`) o botón de bloqueo rápido | Transición inmediata a `Locked` | Pendiente |
+| `LockViewModel` | Minimizar app (`ON_STOP`) o botón de bloqueo rápido | Transición inmediata a `Locked` | Completado (Green) |
 | `EntryDetailViewModel` | Cargar detalle de entrada con ID no existente en DB | Mostrar mensaje "Entrada no encontrada" | Completado (Green) |
 | `TimelineViewModel` | Filtrado combinado (Categoría + Hito + Query de texto) | `AC-06.1`: Coincidencia multi-criterio | Completado (Green) |
