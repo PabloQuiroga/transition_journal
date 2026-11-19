@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface JournalDao {
 
-    @Query("SELECT * FROM journal_entries ORDER BY createdAt DESC")
+    @Query("SELECT * FROM journal_entries ORDER BY occurredAt DESC")
     fun observeAllEntries(): Flow<List<JournalEntity>>
 
     @Query("SELECT * FROM journal_entries WHERE id = :id")

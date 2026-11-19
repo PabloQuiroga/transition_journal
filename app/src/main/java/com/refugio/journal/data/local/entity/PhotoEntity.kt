@@ -23,7 +23,7 @@ data class PhotoEntity(
     val id: Long = 0L,
     val entryId: Long,
     val fileName: String,
-    val absolutePath: String,
+    val absolutePath: String = "",
     val caption: String? = null,
     val orderIndex: Int = 0
 ) {
@@ -32,19 +32,18 @@ data class PhotoEntity(
             id = id,
             entryId = entryId,
             fileName = fileName,
-            absolutePath = absolutePath,
             caption = caption,
             orderIndex = orderIndex
         )
     }
 
     companion object {
-        fun fromDomainModel(photo: EntryPhoto, entryId: Long): PhotoEntity {
+        fun fromDomainModel(photo: EntryPhoto, entryId: Long, absolutePath: String = ""): PhotoEntity {
             return PhotoEntity(
                 id = photo.id,
                 entryId = entryId,
                 fileName = photo.fileName,
-                absolutePath = photo.absolutePath,
+                absolutePath = absolutePath,
                 caption = photo.caption,
                 orderIndex = photo.orderIndex
             )

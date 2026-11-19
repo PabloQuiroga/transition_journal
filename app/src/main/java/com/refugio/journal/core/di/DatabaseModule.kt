@@ -24,7 +24,7 @@ object DatabaseModule {
             context,
             RefugioDatabase::class.java,
             "refugio_journal.db"
-        ).build()
+        ).addMigrations(RefugioDatabase.MIGRATION_1_2).build()
     }
 
     @Provides

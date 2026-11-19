@@ -14,9 +14,10 @@ data class JournalEntity(
     val id: Long = 0L,
     val createdAt: Long,
     val updatedAt: Long,
+    val occurredAt: Long = createdAt,
     val title: String,
     val content: String,
-    val mood: String,
+    val mood: String? = null,
     val category: String,
     val isMilestone: Boolean
 ) {
@@ -25,9 +26,10 @@ data class JournalEntity(
             id = id,
             createdAt = Instant.ofEpochMilli(createdAt),
             updatedAt = Instant.ofEpochMilli(updatedAt),
+            occurredAt = Instant.ofEpochMilli(occurredAt),
             title = title,
             content = content,
-            mood = Mood.valueOf(mood),
+            mood = mood?.let { Mood.valueOf(it) },
             category = Category.valueOf(category),
             isMilestone = isMilestone,
             photos = photos
@@ -40,9 +42,10 @@ data class JournalEntity(
                 id = entry.id,
                 createdAt = entry.createdAt.toEpochMilli(),
                 updatedAt = entry.updatedAt.toEpochMilli(),
+                occurredAt = entry.occurredAt.toEpochMilli(),
                 title = entry.title,
                 content = entry.content,
-                mood = entry.mood.name,
+                mood = entry.mood?.name,
                 category = entry.category.name,
                 isMilestone = entry.isMilestone
             )
