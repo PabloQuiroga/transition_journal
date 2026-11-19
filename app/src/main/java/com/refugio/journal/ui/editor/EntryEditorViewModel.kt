@@ -21,7 +21,7 @@ data class EditorUiState(
     val title: String = "",
     val content: String = "",
     val mood: Mood? = null,
-    val category: Category = Category.EXPRESION_ESTILO,
+    val category: Category? = null,
     val isMilestone: Boolean = false,
     val customCreatedAt: Instant? = null,
     val photos: List<EntryPhoto> = emptyList(),
@@ -51,7 +51,7 @@ class EntryEditorViewModel @Inject constructor(
         _uiState.update { it.copy(mood = mood) }
     }
 
-    fun setCategory(category: Category) {
+    fun setCategory(category: Category?) {
         _uiState.update { it.copy(category = category) }
     }
 

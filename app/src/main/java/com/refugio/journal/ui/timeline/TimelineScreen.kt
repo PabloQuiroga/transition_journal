@@ -230,16 +230,18 @@ private fun JournalEntryCard(
                         )
                     }
                 }
-                Surface(
-                    shape = MaterialTheme.shapes.small,
-                    color = MaterialTheme.colorScheme.secondaryContainer
-                ) {
-                    Text(
-                        text = getCategoryDisplayName(entry.category),
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer
-                    )
+                if (entry.category != null) {
+                    Surface(
+                        shape = MaterialTheme.shapes.small,
+                        color = MaterialTheme.colorScheme.secondaryContainer
+                    ) {
+                        Text(
+                            text = getCategoryDisplayName(entry.category),
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
+                    }
                 }
             }
         }
@@ -257,12 +259,13 @@ private fun getMoodDisplayName(mood: Mood?): String {
     }
 }
 
-private fun getCategoryDisplayName(category: Category): String {
+private fun getCategoryDisplayName(category: Category?): String {
     return when (category) {
         Category.EXPRESION_ESTILO -> "👗 Expresión y Estilo"
         Category.SOCIAL -> "💬 Social"
         Category.EMOCIONAL -> "🧠 Emocional"
         Category.HITO -> "⭐ Hito"
+        null -> "Sin categoría"
     }
 }
 
