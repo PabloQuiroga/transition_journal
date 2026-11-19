@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.AlertDialog
@@ -59,6 +60,7 @@ import java.time.format.DateTimeFormatter
 fun EntryDetailScreen(
     viewModel: EntryDetailViewModel,
     onBackClick: () -> Unit,
+    onEditClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -104,6 +106,11 @@ fun EntryDetailScreen(
                     }
                 },
                 actions = {
+                    uiState.entry?.let { entry ->
+                        IconButton(onClick = { onEditClick(entry.id) }) {
+                            Icon(imageVector = Icons.Default.Edit, contentDescription = "Editar")
+                        }
+                    }
                     IconButton(onClick = { viewModel.prepareShare() }) {
                         Icon(imageVector = Icons.Default.Share, contentDescription = "Compartir")
                     }
@@ -277,38 +284,76 @@ private fun getCategoryDisplayName(category: Category?): String {
 // Previews
 // ---------------------------------------------------------------------------
 
-@Preview(name = "Entry Detail Screen", showBackground = true)
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(name = "Entry Detail Screen with TopBar", showBackground = true)
 @Composable
 private fun EntryDetailScreenPreview() {
     MaterialTheme {
-        Surface {
-            val sampleEntry = JournalEntry(
-                id = 1L,
-                createdAt = Instant.now(),
-                updatedAt = Instant.now(),
-                occurredAt = Instant.now(),
-                title = "Mi primer día con pronombre elle",
-                content = "Fue una experiencia increíblemente liberadora y hermosa. Sentí mucha paz al poder expresarme tal cual soy.",
-                mood = Mood.EUFORICA,
-                category = Category.SOCIAL,
-                isMilestone = true
-            )
+        val sampleEntry = JournalEntry(
+            id = 1L,
+            createdAt = Instant.now(),
+            updatedAt = Instant.now(),
+            occurredAt = Instant.now(),
+            title = "Mi primer día con pronombre elle",
+            content = "Fue una experiencia increíblemente liberadora y hermosa. Sentí mucha paz al poder expresarme tal cual soy.",
+            mood = Mood.EUFORICA,
+            category = Category.SOCIAL,
+            isMilestone = true
+        )
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text(text = "Detalle de Entrada", fontWeight = FontWeight.Bold) },
+                    navigationIcon = {
+                        IconButton(onClick = {}) {
+                            Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+                        }
+                    },
+                    actions = {
+                        IconButton(onClick = {}) {
+                            Icon(imageVector = Icons.Default.Edit, contentDescription = "Editar")
+                        }
+                        IconButton(onClick = {}) {
+                            Icon(imageVector = Icons.Default.Share, contentDescription = "Compartir")
+                        }
+                        IconButton(onClick = {}) {
+                            Icon(imageVector = Icons.Default.Delete, contentDescription = "Eliminar", tint = MaterialTheme.colorScheme.error)
+                        }
+                    }
+                )
+            }
+        ) { paddingValues ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .padding(paddingValues)
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Text(
-                    text = sampleEntry.title,
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = sampleEntry.title,
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Icon(
+                        imageVector = Icons.Default.Star,
+                        contentDescription = "Hito",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+
                 Text(
                     text = "Lunes, 17 de noviembre de 2026, 09:33",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.outline
                 )
+
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
@@ -335,6 +380,7 @@ private fun EntryDetailScreenPreview() {
                         )
                     }
                 }
+
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = sampleEntry.content,

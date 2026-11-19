@@ -1,11 +1,13 @@
 package com.refugio.journal.ui.editor
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.refugio.journal.domain.model.Category
 import com.refugio.journal.domain.model.EntryPhoto
 import com.refugio.journal.domain.model.JournalEntry
 import com.refugio.journal.domain.model.Mood
+import com.refugio.journal.domain.repository.JournalRepository
 import com.refugio.journal.domain.usecase.CreateOrUpdateEntryUseCase
 import com.refugio.journal.domain.usecase.ImportPhotoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,12 +34,41 @@ data class EditorUiState(
 
 @HiltViewModel
 class EntryEditorViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
+    private val journalRepository: JournalRepository,
     private val createOrUpdateEntryUseCase: CreateOrUpdateEntryUseCase,
     private val importPhotoUseCase: ImportPhotoUseCase
 ) : ViewModel() {
 
+    private val entryId: Long = savedStateHandle.get<Long>("entryId") ?: 0L
+
     private val _uiState = MutableStateFlow(EditorUiState())
     val uiState: StateFlow<EditorUiState> = _uiState.asStateFlow()
+
+    init {
+        if (entryId != 0L) {
+            loadExistingEntry(entryId)
+        }
+    }
+
+    private fun loadExistingEntry(id: Long) {
+        viewModelScope.launch {
+            val entry = journalRepository.getEntryById(id)
+            if (entry != null) {
+                _uiState.update {
+                    it.copy(
+                        title = entry.title,
+                        content = entry.content,
+                        mood = entry.mood,
+                        category = entry.category,
+                        isMilestone = entry.isMilestone,
+                        customCreatedAt = entry.occurredAt,
+                        photos = entry.photos
+                    )
+                }
+            }
+        }
+    }
 
     fun updateTitle(title: String) {
         _uiState.update { it.copy(title = title) }
@@ -69,7 +100,7 @@ class EntryEditorViewModel @Inject constructor(
             importPhotoUseCase(sourceUriString, currentCount)
                 .onSuccess { fileName ->
                     val newPhoto = EntryPhoto(
-                        entryId = 0L,
+                        entryId = entryId,
                         fileName = fileName,
                         orderIndex = _uiState.value.photos.size
                     )
@@ -93,6 +124,7 @@ class EntryEditorViewModel @Inject constructor(
             _uiState.update { it.copy(isSaving = true, errorMessage = null) }
             val state = _uiState.value
             val entry = JournalEntry(
+                id = entryId,
                 createdAt = state.customCreatedAt ?: Instant.now(),
                 occurredAt = state.customCreatedAt ?: Instant.now(),
                 title = state.title,

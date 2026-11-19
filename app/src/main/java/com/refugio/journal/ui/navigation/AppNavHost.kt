@@ -21,7 +21,9 @@ import com.refugio.journal.ui.timeline.TimelineViewModel
 sealed class Screen(val route: String) {
     data object Lock : Screen("lock")
     data object Timeline : Screen("timeline")
-    data object Editor : Screen("editor")
+    data object Editor : Screen("editor?entryId={entryId}") {
+        fun createRoute(entryId: Long? = null) = if (entryId != null) "editor?entryId=$entryId" else "editor"
+    }
     data object Detail : Screen("detail/{entryId}") {
         fun createRoute(entryId: Long) = "detail/$entryId"
     }
@@ -55,7 +57,7 @@ fun AppNavHost(
             TimelineScreen(
                 viewModel = viewModel,
                 onNewEntryClick = {
-                    navController.navigate(Screen.Editor.route)
+                    navController.navigate(Screen.Editor.createRoute())
                 },
                 onEntryClick = { entryId ->
                     navController.navigate(Screen.Detail.createRoute(entryId))
@@ -63,7 +65,10 @@ fun AppNavHost(
             )
         }
 
-        composable(Screen.Editor.route) {
+        composable(
+            route = Screen.Editor.route,
+            arguments = listOf(navArgument("entryId") { type = NavType.LongType; defaultValue = 0L })
+        ) {
             val viewModel: EntryEditorViewModel = hiltViewModel()
             EntryEditorScreen(
                 viewModel = viewModel,
@@ -85,6 +90,9 @@ fun AppNavHost(
                 viewModel = viewModel,
                 onBackClick = {
                     navController.popBackStack()
+                },
+                onEditClick = { entryId ->
+                    navController.navigate(Screen.Editor.createRoute(entryId))
                 }
             )
         }

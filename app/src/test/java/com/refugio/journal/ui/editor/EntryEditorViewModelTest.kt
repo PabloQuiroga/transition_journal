@@ -1,8 +1,10 @@
 package com.refugio.journal.ui.editor
 
+import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import com.refugio.journal.domain.model.Category
 import com.refugio.journal.domain.model.Mood
+import com.refugio.journal.domain.repository.JournalRepository
 import com.refugio.journal.domain.usecase.CreateOrUpdateEntryUseCase
 import com.refugio.journal.domain.usecase.ImportPhotoUseCase
 import io.mockk.coEvery
@@ -23,6 +25,8 @@ import org.junit.Test
 class EntryEditorViewModelTest {
 
     private val testDispatcher = StandardTestDispatcher()
+    private val savedStateHandle = SavedStateHandle()
+    private val journalRepository: JournalRepository = mockk(relaxed = true)
     private val createOrUpdateEntryUseCase: CreateOrUpdateEntryUseCase = mockk()
     private val importPhotoUseCase: ImportPhotoUseCase = mockk()
 
@@ -38,7 +42,7 @@ class EntryEditorViewModelTest {
 
     @Test
     fun `when updating fields then uiState reflects changes`() = runTest {
-        val viewModel = EntryEditorViewModel(createOrUpdateEntryUseCase, importPhotoUseCase)
+        val viewModel = EntryEditorViewModel(savedStateHandle, journalRepository, createOrUpdateEntryUseCase, importPhotoUseCase)
 
         viewModel.uiState.test {
             val initialState = awaitItem()
@@ -52,7 +56,7 @@ class EntryEditorViewModelTest {
 
     @Test
     fun `when saving valid entry then emits isSavedSuccess true`() = runTest {
-        val viewModel = EntryEditorViewModel(createOrUpdateEntryUseCase, importPhotoUseCase)
+        val viewModel = EntryEditorViewModel(savedStateHandle, journalRepository, createOrUpdateEntryUseCase, importPhotoUseCase)
         viewModel.updateContent("Nota importante sobre mi transición")
         viewModel.setMood(Mood.EMPODERADA)
         viewModel.setCategory(Category.SOCIAL)
