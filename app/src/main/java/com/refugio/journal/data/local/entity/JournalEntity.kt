@@ -18,7 +18,7 @@ data class JournalEntity(
     val title: String,
     val content: String,
     val mood: String? = null,
-    val category: String,
+    val category: String? = null,
     val isMilestone: Boolean
 ) {
     fun toDomainModel(photos: List<EntryPhoto> = emptyList()): JournalEntry {
@@ -30,7 +30,7 @@ data class JournalEntity(
             title = title,
             content = content,
             mood = mood?.let { Mood.valueOf(it) },
-            category = Category.valueOf(category),
+            category = category?.let { Category.valueOf(it) },
             isMilestone = isMilestone,
             photos = photos
         )
@@ -46,7 +46,7 @@ data class JournalEntity(
                 title = entry.title,
                 content = entry.content,
                 mood = entry.mood?.name,
-                category = entry.category.name,
+                category = entry.category?.name,
                 isMilestone = entry.isMilestone
             )
         }
