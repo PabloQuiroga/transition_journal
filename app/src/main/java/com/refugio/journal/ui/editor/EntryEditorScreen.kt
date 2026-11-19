@@ -42,12 +42,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.refugio.journal.domain.model.Category
 import com.refugio.journal.domain.model.Mood
+import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,6 +60,7 @@ fun EntryEditorScreen(
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
 
     val photoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickMultipleVisualMedia(maxItems = 5)
@@ -140,9 +143,10 @@ fun EntryEditorScreen(
                 Text(text = "Fotografías adjuntas (${uiState.photos.size}/5)", style = MaterialTheme.typography.titleSmall)
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     items(uiState.photos, key = { it.fileName }) { photo ->
+                        val photoFile = File(context.filesDir, "private_photos/${photo.fileName}")
                         Box(modifier = Modifier.size(90.dp)) {
                             AsyncImage(
-                                model = photo.absolutePath,
+                                model = photoFile,
                                 contentDescription = null,
                                 modifier = Modifier
                                     .fillMaxSize()
@@ -173,12 +177,12 @@ fun EntryEditorScreen(
             }
 
             // Mood Selector
-            Text(text = "Estado Emocional", style = MaterialTheme.typography.titleSmall)
+            Text(text = "Estado Emocional (opcional)", style = MaterialTheme.typography.titleSmall)
             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(Mood.entries) { mood ->
                     FilterChip(
                         selected = uiState.mood == mood,
-                        onClick = { viewModel.setMood(mood) },
+                        onClick = { viewModel.setMood(if (uiState.mood == mood) null else mood) },
                         label = { Text(getMoodDisplayName(mood)) }
                     )
                 }
@@ -228,13 +232,14 @@ fun EntryEditorScreen(
     }
 }
 
-private fun getMoodDisplayName(mood: Mood): String {
+private fun getMoodDisplayName(mood: Mood?): String {
     return when (mood) {
         Mood.EUFORICA -> "✨ Eufórica"
         Mood.EMPODERADA -> "💪 Empoderada"
         Mood.TRANQUILA -> "🌿 Tranquila"
         Mood.VULNERABLE -> "💧 Vulnerable"
         Mood.ANSIOSA -> "⚡ Ansiosa"
+        null -> "Sin emoción"
     }
 }
 

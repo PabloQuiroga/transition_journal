@@ -203,7 +203,7 @@ private fun JournalEntryCard(
             }
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = dateFormatter.format(entry.createdAt),
+                text = dateFormatter.format(entry.occurredAt),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.outline
             )
@@ -217,16 +217,18 @@ private fun JournalEntryCard(
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Surface(
-                    shape = MaterialTheme.shapes.small,
-                    color = MaterialTheme.colorScheme.primaryContainer
-                ) {
-                    Text(
-                        text = getMoodDisplayName(entry.mood),
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
+                if (entry.mood != null) {
+                    Surface(
+                        shape = MaterialTheme.shapes.small,
+                        color = MaterialTheme.colorScheme.primaryContainer
+                    ) {
+                        Text(
+                            text = getMoodDisplayName(entry.mood),
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    }
                 }
                 Surface(
                     shape = MaterialTheme.shapes.small,
@@ -244,13 +246,14 @@ private fun JournalEntryCard(
     }
 }
 
-private fun getMoodDisplayName(mood: Mood): String {
+private fun getMoodDisplayName(mood: Mood?): String {
     return when (mood) {
         Mood.EUFORICA -> "✨ Eufórica"
         Mood.EMPODERADA -> "💪 Empoderada"
         Mood.TRANQUILA -> "🌿 Tranquila"
         Mood.VULNERABLE -> "💧 Vulnerable"
         Mood.ANSIOSA -> "⚡ Ansiosa"
+        null -> "Sin emoción"
     }
 }
 
@@ -277,6 +280,7 @@ private fun TimelineScreenPreview() {
                     id = 1L,
                     createdAt = Instant.now(),
                     updatedAt = Instant.now(),
+                    occurredAt = Instant.now(),
                     title = "Primera salida con nombre elegido",
                     content = "Fue una experiencia increíblemente liberadora y hermosa.",
                     mood = Mood.EUFORICA,
@@ -287,6 +291,7 @@ private fun TimelineScreenPreview() {
                     id = 2L,
                     createdAt = Instant.now().minusSeconds(86400),
                     updatedAt = Instant.now().minusSeconds(86400),
+                    occurredAt = Instant.now().minusSeconds(86400),
                     title = "Probando nuevo estilo",
                     content = "Me siento muy cómoda con este outfit.",
                     mood = Mood.TRANQUILA,

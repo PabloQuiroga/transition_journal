@@ -49,6 +49,7 @@ import coil3.compose.AsyncImage
 import com.refugio.journal.domain.model.Category
 import com.refugio.journal.domain.model.JournalEntry
 import com.refugio.journal.domain.model.Mood
+import java.io.File
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -155,7 +156,7 @@ fun EntryDetailScreen(
                 }
 
                 Text(
-                    text = dateFormatter.format(entry.createdAt),
+                    text = dateFormatter.format(entry.occurredAt),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.outline
                 )
@@ -163,16 +164,18 @@ fun EntryDetailScreen(
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Surface(
-                        shape = MaterialTheme.shapes.small,
-                        color = MaterialTheme.colorScheme.primaryContainer
-                    ) {
-                        Text(
-                            text = getMoodDisplayName(entry.mood),
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
+                    if (entry.mood != null) {
+                        Surface(
+                            shape = MaterialTheme.shapes.small,
+                            color = MaterialTheme.colorScheme.primaryContainer
+                        ) {
+                            Text(
+                                text = getMoodDisplayName(entry.mood),
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                        }
                     }
                     Surface(
                         shape = MaterialTheme.shapes.small,
@@ -192,8 +195,9 @@ fun EntryDetailScreen(
                     Text(text = "Fotografías adjuntas", style = MaterialTheme.typography.titleSmall)
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         items(entry.photos, key = { it.fileName }) { photo ->
+                            val photoFile = File(context.filesDir, "private_photos/${photo.fileName}")
                             AsyncImage(
-                                model = photo.absolutePath,
+                                model = photoFile,
                                 contentDescription = null,
                                 modifier = Modifier
                                     .size(120.dp)
@@ -246,13 +250,14 @@ fun EntryDetailScreen(
     }
 }
 
-private fun getMoodDisplayName(mood: Mood): String {
+private fun getMoodDisplayName(mood: Mood?): String {
     return when (mood) {
         Mood.EUFORICA -> "✨ Eufórica"
         Mood.EMPODERADA -> "💪 Empoderada"
         Mood.TRANQUILA -> "🌿 Tranquila"
         Mood.VULNERABLE -> "💧 Vulnerable"
         Mood.ANSIOSA -> "⚡ Ansiosa"
+        null -> "Sin emoción"
     }
 }
 
@@ -278,6 +283,7 @@ private fun EntryDetailScreenPreview() {
                 id = 1L,
                 createdAt = Instant.now(),
                 updatedAt = Instant.now(),
+                occurredAt = Instant.now(),
                 title = "Mi primer día con pronombre elle",
                 content = "Fue una experiencia increíblemente liberadora y hermosa. Sentí mucha paz al poder expresarme tal cual soy.",
                 mood = Mood.EUFORICA,

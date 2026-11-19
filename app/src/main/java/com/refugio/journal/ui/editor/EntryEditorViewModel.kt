@@ -20,7 +20,7 @@ import javax.inject.Inject
 data class EditorUiState(
     val title: String = "",
     val content: String = "",
-    val mood: Mood = Mood.TRANQUILA,
+    val mood: Mood? = null,
     val category: Category = Category.EXPRESION_ESTILO,
     val isMilestone: Boolean = false,
     val customCreatedAt: Instant? = null,
@@ -47,7 +47,7 @@ class EntryEditorViewModel @Inject constructor(
         _uiState.update { it.copy(content = content) }
     }
 
-    fun setMood(mood: Mood) {
+    fun setMood(mood: Mood?) {
         _uiState.update { it.copy(mood = mood) }
     }
 
@@ -71,7 +71,6 @@ class EntryEditorViewModel @Inject constructor(
                     val newPhoto = EntryPhoto(
                         entryId = 0L,
                         fileName = fileName,
-                        absolutePath = sourceUriString,
                         orderIndex = _uiState.value.photos.size
                     )
                     _uiState.update { it.copy(photos = it.photos + newPhoto, errorMessage = null) }
@@ -95,6 +94,7 @@ class EntryEditorViewModel @Inject constructor(
             val state = _uiState.value
             val entry = JournalEntry(
                 createdAt = state.customCreatedAt ?: Instant.now(),
+                occurredAt = state.customCreatedAt ?: Instant.now(),
                 title = state.title,
                 content = state.content,
                 mood = state.mood,
