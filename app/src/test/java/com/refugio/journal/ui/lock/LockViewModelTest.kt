@@ -92,4 +92,21 @@ class LockViewModelTest {
             assertTrue(awaitItem() is LockUiState.Locked)
         }
     }
+
+    @Test
+    fun `when verifyPin triggers cooldown then uiState emits Locked with cooldown seconds`() = runTest {
+        coEvery { securityManager.isPinConfigured() } returns true
+        coEvery { verifyAccessUseCase.verifyPin("wrong") } returns VerifyAccessResult.CooldownActive(30L)
+
+        val viewModel = LockViewModel(securityManager, verifyAccessUseCase, setupPinUseCase)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.uiState.test {
+            assertTrue(awaitItem() is LockUiState.Locked)
+            viewModel.verifyPin("wrong")
+            testDispatcher.scheduler.advanceUntilIdle()
+            val lockedState = awaitItem() as LockUiState.Locked
+            assertEquals(30L, lockedState.cooldownSecondsRemaining)
+        }
+    }
 }
