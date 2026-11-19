@@ -19,7 +19,7 @@ class PrepareShareContentUseCase @Inject constructor(
         val formattedText = buildString {
             appendLine("✨ ${entry.title}")
             appendLine("Emoción: ${entry.mood?.name ?: "No especificada"}")
-            appendLine("Categoría: ${entry.category.name}")
+            appendLine("Categoría: ${entry.category?.name ?: "No especificada"}")
             appendLine()
             appendLine(entry.content)
         }

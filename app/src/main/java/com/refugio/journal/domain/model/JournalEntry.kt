@@ -10,7 +10,7 @@ data class JournalEntry(
     val title: String,
     val content: String,
     val mood: Mood? = null,
-    val category: Category,
+    val category: Category? = null,
     val isMilestone: Boolean = false,
     val photos: List<EntryPhoto> = emptyList()
 )
